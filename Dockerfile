@@ -5,7 +5,8 @@ RUN apk add --no-cache git curl
 RUN git clone https://github.com/DivanteLtd/vue-storefront.git /opt/vue-storefront \
     && cd /opt/vue-storefront \
     && yarn install \
-    && yarn installer:ci 
+    && cp /opt/vue-storefront/config/default.json /opt/vue-storefront/config/local.json
+    && yarn build
 
 FROM node:10-alpine
 
