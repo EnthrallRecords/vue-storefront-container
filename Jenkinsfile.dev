@@ -37,7 +37,7 @@ spec:
           userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront-container.git']]])
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
-          /kaniko/executor --build-arg BRANCH=dev -c `pwd` --skip-tls-verify --destination=containers.internal/vue-storefront-dev:$VER --destination=containers.internal/vue-storefront-dev:$BUILD_ID
+          /kaniko/executor --build-arg BRANCH=dev -c `pwd` --skip-tls-verify --destination=containers.internal/vue-storefront-dev:$BUILD_ID
           '''
         }
       }
@@ -68,7 +68,7 @@ spec:
       steps {
         container(name: 'kubectl', shell: '/bin/sh') {
           sh '''#!/bin/sh
-          kubectl -n vuestorefront set image deployment.v1.apps/vuestorefront vuestorefront=containers.internal/vue-storefront:$BUILD_ID
+          kubectl -n vuestorefront set image deployment.v1.apps/vuestorefront vuestorefront=containers.internal/vue-storefront-dev:$BUILD_ID
           '''
         }
       }
