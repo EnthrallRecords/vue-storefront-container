@@ -1,8 +1,10 @@
 FROM node:10-alpine as build
 
+ARG BRANCH
+
 RUN apk add --no-cache git curl
 
-RUN git clone https://github.com/EnthrallRecords/vue-storefront.git /opt/vue-storefront \
+RUN git clone --single-branch -b ${BRANCH} https://github.com/EnthrallRecords/vue-storefront.git /opt/vue-storefront \
     && cd /opt/vue-storefront \
     && yarn install \
     && cp /opt/vue-storefront/config/default.json /opt/vue-storefront/config/local.json

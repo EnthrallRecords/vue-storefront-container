@@ -37,7 +37,7 @@ spec:
           userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront-container.git']]])
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
-          /kaniko/executor --build-arg BRANCH=custom -c `pwd` --skip-tls-verify --destination=containers.internal/vue-storefront:$VER --destination=containers.internal/vue-storefront:$BUILD_ID
+          /kaniko/executor --build-arg BRANCH=dev -c `pwd` --skip-tls-verify --destination=containers.internal/vue-storefront-dev:$VER --destination=containers.internal/vue-storefront-dev:$BUILD_ID
           '''
         }
       }
