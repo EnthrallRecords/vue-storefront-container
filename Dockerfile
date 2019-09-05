@@ -13,9 +13,6 @@ FROM node:10-alpine
 
 COPY --from=0 /opt/vue-storefront /opt/vue-storefront
 
-COPY vsf-external-checkout.js /opt/vue-storefront/node_modules/vsf-external-checkout/index.js
-COPY extensions.js /opt/vue-storefront/src/extensions/index.ts
-
 COPY entrypoint.sh /
 
 WORKDIR /opt/vue-storefront
