@@ -1,7 +1,7 @@
 pipeline {
   agent none
   environment {
-    VER = "1.10.1"
+    VER = "1.10.2"
   }
   stages {
     stage('Build with Kaniko') {
