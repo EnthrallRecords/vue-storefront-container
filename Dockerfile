@@ -2,7 +2,7 @@ FROM node:13-alpine as build
 
 ARG BRANCH
 
-RUN apk add --no-cache git curl
+RUN apk add --no-cache git curl build-base python
 
 RUN git clone --single-branch -b ${BRANCH} https://github.com/EnthrallRecords/vue-storefront.git /opt/vue-storefront \
     && cd /opt/vue-storefront \
