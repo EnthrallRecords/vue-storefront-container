@@ -1,0 +1,10 @@
+ARG BASE=vue-storefront
+
+FROM containers.internal/$BASE
+
+ADD https://github.com/Vendic/vsf-external-checkout/archive/3.0.0.tar.gz /tmp/external-checkout
+
+RUN mkdir -p /opt/vue-storefront/src/modules/external-checkout \
+    && tar -xzf /tmp/external-checkout --strip-components=1 -C /opt/vue-storefront/src/modules/external-checkout
+
+COPY client.ts /opt/vue-storefront/src/modules/client.ts
