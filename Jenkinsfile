@@ -38,7 +38,7 @@ spec:
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
           /kaniko/executor --build-arg BRANCH=custom -c `pwd` --skip-tls-verify --destination=containers.internal/vue-storefront:$VER --destination=containers.internal/vue-storefront:$BUILD_ID
-          /kaniko/executor --build-arg BASE=containers.internal/vue-storefront:$BUILD_ID -c `pwd` -f Dockerfile-extcheckout --skip-tls-verify --destination=containers.internal/vue-storefront:extcheckout-$VER --destination=containers.internal/vue-storefront:extcheckout-$BUILD_ID
+          /kaniko/executor --build-arg BASE=vue-storefront:$BUILD_ID -c `pwd` -f Dockerfile-extcheckout --skip-tls-verify --destination=containers.internal/vue-storefront:extcheckout-$VER --destination=containers.internal/vue-storefront:extcheckout-$BUILD_ID
           '''
         }
       }
