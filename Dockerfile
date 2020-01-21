@@ -1,4 +1,4 @@
-FROM node:13-alpine as build
+FROM node:12-alpine as build
 
 ARG BRANCH
 
@@ -9,7 +9,7 @@ RUN git clone --single-branch -b ${BRANCH} https://github.com/EnthrallRecords/vu
     && yarn install \
     && cp /opt/vue-storefront/config/default.json /opt/vue-storefront/config/local.json
 
-FROM node:13-alpine
+FROM node:12-alpine
 
 COPY --from=0 /opt/vue-storefront /opt/vue-storefront
 
