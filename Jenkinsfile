@@ -1,7 +1,7 @@
 pipeline {
   agent none
   environment {
-    VER = "1.11.0"
+    VER = "1.12.3"
   }
   stages {
     stage('Build with Kaniko') {
@@ -22,7 +22,7 @@ spec:
     effect: "PreferNoSchedule"
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug-v0.15.0
+    image: gcr.io/kaniko-project/executor:v1.6.0-slim
     command:
     - /busybox/cat
     tty: true
@@ -69,7 +69,7 @@ spec:
       steps {
         container(name: 'kubectl', shell: '/bin/sh') {
           sh '''#!/bin/sh
-          kubectl -n vuestorefront set image deployment.v1.apps/vuestorefront vuestorefront=containers.internal/vue-storefront:$BUILD_ID
+          kubectl -n vuestorefront set image deployment.v1.apps/vuestorefront vuestorefront=containers.internal/vue-storefront:extcheckout-$BUILD_ID
           '''
         }
       }

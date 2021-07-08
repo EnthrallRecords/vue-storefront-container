@@ -1,13 +1,9 @@
 pipeline {
   agent none
-  environment {
-    VER = "1.11.0"
-  }
   stages {
     stage('Build with Kaniko') {
       agent {
         kubernetes {
-          label "kaniko"
           yaml """
 kind: Pod
 metadata:
@@ -22,7 +18,7 @@ spec:
     effect: "PreferNoSchedule"
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:debug-v0.15.0
+    image: gcr.io/kaniko-project/executor:v1.6.0-debug
     command:
     - /busybox/cat
     tty: true
@@ -33,12 +29,21 @@ spec:
         PATH = "/busybox:/kaniko:$PATH"
       }
       steps {
-        checkout([$class: 'GitSCM', branches: [[name: env.GIT_BRANCH]],
-          userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront-container.git']]])
+        dir('container'){
+          checkout([$class: 'GitSCM', branches: [[name: 'master']],
+            userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront-container.git']]])
+        }
+        dir('vue-storefront'){
+          checkout([$class: 'GitSCM', branches: [[name: 'custom']],
+            userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront.git']]])
+        }
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
-          /kaniko/executor --build-arg BRANCH=dev -c `pwd` --skip-tls-verify --destination=containers.internal/vue-storefront-dev:$BUILD_ID
-          /kaniko/executor --build-arg BASE=vue-storefront-dev:$BUILD_ID -c `pwd` -f Dockerfile-extcheckout --skip-tls-verify --destination=containers.internal/vue-storefront-dev:extcheckout-$BUILD_ID
+          cp $WORKSPACE/container/* $WORKSPACE/vue-storefront/
+          /kaniko/executor -c "$WORKSPACE/vue-storefront" --skip-tls-verify \
+            --destination=containers.internal/vue-storefront-dev:$BUILD_ID
+          #/kaniko/executor --build-arg BASE=vue-storefront-dev:$BUILD_ID -c `pwd` -f Dockerfile-extcheckout --skip-tls-verify \
+            --destination=containers.internal/vue-storefront-dev:extcheckout-$BUILD_ID
           '''
         }
       }
@@ -46,7 +51,6 @@ spec:
     stage('Deploy') {
       agent {
         kubernetes {
-          label "kubectl"
           yaml """
 kind: Pod
 metadata:
@@ -75,35 +79,4 @@ spec:
       }
     }
   }
-}
-
-def getRepoURL() {
-  sh "git config --get remote.origin.url > .git/remote-url"
-  return readFile(".git/remote-url").trim()
-}
- 
-def getCommitSha() {
-  sh "git rev-parse HEAD > .git/current-commit"
-  return readFile(".git/current-commit").trim()
-}
- 
-def updateGithubCommitStatus(build) {
-  // workaround https://issues.jenkins-ci.org/browse/JENKINS-38674
-  repoUrl = getRepoURL()
-  commitSha = getCommitSha()
- 
-  step([
-    $class: 'GitHubCommitStatusSetter',
-    reposSource: [$class: "ManuallyEnteredRepositorySource", url: repoUrl],
-    commitShaSource: [$class: "ManuallyEnteredShaSource", sha: commitSha],
-    errorHandlers: [[$class: 'ShallowAnyErrorHandler']],
-    statusResultSource: [
-      $class: 'ConditionalStatusResultSource',
-      results: [
-        [$class: 'BetterThanOrEqualBuildResult', result: 'SUCCESS', state: 'SUCCESS', message: build.description],
-        [$class: 'BetterThanOrEqualBuildResult', result: 'FAILURE', state: 'FAILURE', message: build.description],
-        [$class: 'AnyBuildResult', state: 'PENDING', message: build.description]
-      ]
-    ]
-  ])
 }

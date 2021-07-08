@@ -1,15 +1,17 @@
-FROM node:12-alpine as build
+FROM node:16-alpine as build
 
 ARG BRANCH
 
-RUN apk add --no-cache git curl build-base python
+RUN apk add --no-cache curl build-base python
 
-RUN git clone --single-branch -b ${BRANCH} https://github.com/EnthrallRecords/vue-storefront.git /opt/vue-storefront \
-    && cd /opt/vue-storefront \
-    && yarn install \
+COPY . /opt/vue-storefront
+
+WORKDIR /opt/vue-storefront
+
+RUN yarn install \
     && cp /opt/vue-storefront/config/default.json /opt/vue-storefront/config/local.json
 
-FROM node:12-alpine
+FROM node:16-alpine
 
 COPY --from=0 /opt/vue-storefront /opt/vue-storefront
 
