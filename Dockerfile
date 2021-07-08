@@ -2,7 +2,7 @@ FROM node:16-alpine as build
 
 ARG BRANCH
 
-RUN apk add --no-cache curl build-base python
+RUN apk add --no-cache curl build-base python3
 
 COPY . /opt/vue-storefront
 
