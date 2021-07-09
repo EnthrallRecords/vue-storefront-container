@@ -1,4 +1,4 @@
-FROM node:16-alpine as build
+FROM node:15-alpine as build
 
 ARG BRANCH
 
@@ -11,7 +11,7 @@ WORKDIR /opt/vue-storefront
 RUN yarn install \
     && cp /opt/vue-storefront/config/default.json /opt/vue-storefront/config/local.json
 
-FROM node:16-alpine
+FROM node:15-alpine
 
 COPY --from=0 /opt/vue-storefront /opt/vue-storefront
 
