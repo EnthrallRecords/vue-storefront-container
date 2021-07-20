@@ -20,7 +20,7 @@ COPY entrypoint.sh /
 WORKDIR /opt/vue-storefront
 
 RUN apk add --no-cache git && \
-    npm install lerna && \
+    npm install -g lerna && \
     apk del git
 
 ENTRYPOINT "/entrypoint.sh"

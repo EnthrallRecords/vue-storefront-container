@@ -73,7 +73,7 @@ spec:
       steps {
         container(name: 'kubectl', shell: '/bin/sh') {
           sh '''#!/bin/sh
-          kubectl -n vuestorefront set image deployment.v1.apps/vuestorefront vuestorefront=containers.internal/vue-storefront-dev:extcheckout-$BUILD_ID
+          kubectl -n enthrall-test-store set image deployment.v1.apps/vuestorefront vuestorefront=containers.internal/vue-storefront-dev:extcheckout-$BUILD_ID
           '''
         }
       }
