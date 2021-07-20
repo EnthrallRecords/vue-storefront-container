@@ -34,8 +34,8 @@ spec:
             userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront-container.git']]])
         }
         dir('vue-storefront'){
-          checkout([$class: 'GitSCM', branches: [[name: 'custom']],
-            userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront.git']]])
+          checkout([$class: 'GitSCM', branches: [[name: 'v1.12.3']],
+            userRemoteConfigs: [[url: 'https://github.com/vuestorefront/vue-storefront.git']]])
         }
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
