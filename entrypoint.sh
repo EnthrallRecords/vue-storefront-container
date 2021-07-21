@@ -1,8 +1,6 @@
 #!/bin/sh
 set -e
 
-lerna bootstrap
-
 if [ "$VS_ENV" = 'dev' ]; then
   yarn dev
 else
