@@ -29,18 +29,11 @@ spec:
         PATH = "/busybox:/kaniko:$PATH"
       }
       steps {
-        dir('container'){
-          checkout([$class: 'GitSCM', branches: [[name: 'master']],
-            userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront-container.git']]])
-        }
-        dir('vue-storefront'){
-          checkout([$class: 'GitSCM', branches: [[name: 'v1.12.3']],
-            userRemoteConfigs: [[url: 'https://github.com/vuestorefront/vue-storefront.git']]])
-        }
+        checkout([$class: 'GitSCM', branches: [[name: 'master']],
+          userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront-container.git']]])
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
-          cp $WORKSPACE/container/* $WORKSPACE/vue-storefront/
-          /kaniko/executor -c "$WORKSPACE/vue-storefront" --skip-tls-verify \
+          /kaniko/executor -c "$WORKSPACE" --skip-tls-verify \
             --destination=containers.internal/vue-storefront-dev:$BUILD_ID
           #/kaniko/executor --build-arg BASE=vue-storefront-dev:$BUILD_ID -c `pwd` -f Dockerfile-extcheckout --skip-tls-verify \
             --destination=containers.internal/vue-storefront-dev:extcheckout-$BUILD_ID
