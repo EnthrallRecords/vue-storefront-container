@@ -1,0 +1,8 @@
+ARG BASE=vue-storefront
+
+FROM containers.internal/$BASE as build
+
+RUN apk add --no-cache git && \
+    git clone git@github.com:danrcoull/vsf-payment-braintree.git /opt/vue-storefront/src/modules/payment-braintree && \
+    lerna bootstrap && \
+    apk del git

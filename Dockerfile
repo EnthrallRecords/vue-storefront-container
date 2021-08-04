@@ -16,8 +16,8 @@ RUN npm install -g lerna \
 
 RUN lerna bootstrap
 
-RUN lerna add @storefront-ui/shared \
-    && lerna add @storefront-ui/vue
+RUN lerna add @storefront-ui/vue@0.10.5 \
+    && lerna add @storefront-ui/shared@0.10.5
 
 FROM node:15-alpine
 
