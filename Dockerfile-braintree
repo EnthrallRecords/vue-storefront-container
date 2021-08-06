@@ -2,7 +2,8 @@ ARG BASE=vue-storefront-dev:32
 
 FROM containers.internal/$BASE as build
 
-RUN apk add --no-cache git curl build-base python2
+RUN apk add --no-cache git curl build-base python2 && \
+    npm install -g npm
 
 RUN npm install -g lerna && \
     git clone https://github.com/danrcoull/vsf-payment-braintree.git /opt/vue-storefront/src/modules/payment-braintree

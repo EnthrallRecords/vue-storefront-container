@@ -2,7 +2,8 @@ FROM node:15-alpine as build
 
 ARG STOREFRONT_VERSION=v1.12.3
 
-RUN apk add --no-cache git curl build-base python2
+RUN apk add --no-cache git curl build-base python2 && \
+    npm install -g npm
 
 RUN git clone -b $STOREFRONT_VERSION https://github.com/vuestorefront/vue-storefront.git /opt/vue-storefront
 
