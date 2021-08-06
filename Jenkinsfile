@@ -7,22 +7,15 @@ pipeline {
     stage('Build with Kaniko') {
       agent {
         kubernetes {
-          label "kaniko"
+          yamlMergeStrategy merge()
           yaml """
 kind: Pod
 metadata:
   name: kaniko
 spec:
-  nodeSelector:
-    hardware: minipc
-  tolerations:
-  - key: "resource"
-    operator: "Equal"
-    value: "limited"
-    effect: "PreferNoSchedule"
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:v1.6.0-slim
+    image: gcr.io/kaniko-project/executor:v1.6.0-debug
     command:
     - /busybox/cat
     tty: true
@@ -33,12 +26,16 @@ spec:
         PATH = "/busybox:/kaniko:$PATH"
       }
       steps {
-        checkout([$class: 'GitSCM', branches: [[name: env.GIT_BRANCH]],
+        checkout([$class: 'GitSCM', branches: [[name: 'master']],
           userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront-container.git']]])
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
-          /kaniko/executor --build-arg BRANCH=custom -c `pwd` --skip-tls-verify --destination=containers.internal/vue-storefront:$VER --destination=containers.internal/vue-storefront:$BUILD_ID
-          /kaniko/executor --build-arg BASE=vue-storefront:$BUILD_ID -c `pwd` -f Dockerfile-extcheckout --skip-tls-verify --destination=containers.internal/vue-storefront:extcheckout-$VER --destination=containers.internal/vue-storefront:extcheckout-$BUILD_ID
+          /kaniko/executor --build-arg STOREFRONT_VERSION=v$VER -c "$WORKSPACE" --skip-tls-verify \
+            --destination=containers.internal/vue-storefront:$BUILD_ID \
+            --destination=containers.internal/vue-storefront:$VER
+          /kaniko/executor --build-arg BASE=vue-storefront:$BUILD_ID -c `pwd` -f Dockerfile-braintree --skip-tls-verify \
+            --destination=containers.internal/vue-storefront:braintree-$BUILD_ID \
+            --destination=containers.internal/vue-storefront:braintree-$VER
           '''
         }
       }
@@ -46,7 +43,6 @@ spec:
     stage('Deploy') {
       agent {
         kubernetes {
-          label "kubectl"
           yaml """
 kind: Pod
 metadata:
@@ -69,41 +65,10 @@ spec:
       steps {
         container(name: 'kubectl', shell: '/bin/sh') {
           sh '''#!/bin/sh
-          kubectl -n vuestorefront set image deployment.v1.apps/vuestorefront vuestorefront=containers.internal/vue-storefront:extcheckout-$BUILD_ID
+          kubectl -n enthrall-test-store set image deployment.v1.apps/vuestorefront vuestorefront=containers.internal/vue-storefront:braintree-$BUILD_ID
           '''
         }
       }
     }
   }
-}
-
-def getRepoURL() {
-  sh "git config --get remote.origin.url > .git/remote-url"
-  return readFile(".git/remote-url").trim()
-}
- 
-def getCommitSha() {
-  sh "git rev-parse HEAD > .git/current-commit"
-  return readFile(".git/current-commit").trim()
-}
- 
-def updateGithubCommitStatus(build) {
-  // workaround https://issues.jenkins-ci.org/browse/JENKINS-38674
-  repoUrl = getRepoURL()
-  commitSha = getCommitSha()
- 
-  step([
-    $class: 'GitHubCommitStatusSetter',
-    reposSource: [$class: "ManuallyEnteredRepositorySource", url: repoUrl],
-    commitShaSource: [$class: "ManuallyEnteredShaSource", sha: commitSha],
-    errorHandlers: [[$class: 'ShallowAnyErrorHandler']],
-    statusResultSource: [
-      $class: 'ConditionalStatusResultSource',
-      results: [
-        [$class: 'BetterThanOrEqualBuildResult', result: 'SUCCESS', state: 'SUCCESS', message: build.description],
-        [$class: 'BetterThanOrEqualBuildResult', result: 'FAILURE', state: 'FAILURE', message: build.description],
-        [$class: 'AnyBuildResult', state: 'PENDING', message: build.description]
-      ]
-    ]
-  ])
 }
