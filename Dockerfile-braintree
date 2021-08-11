@@ -1,4 +1,4 @@
-ARG BASE=vue-storefront-dev:32
+ARG BASE=vue-storefront:test
 
 FROM containers.internal/$BASE as build
 

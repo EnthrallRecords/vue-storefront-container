@@ -72,6 +72,8 @@ spec:
         container(name: 'kubectl', shell: '/bin/sh') {
           sh '''#!/bin/sh
           kubectl -n enthrall-test-store set image deployment.v1.apps/vuestorefront vuestorefront=containers.internal/vue-storefront:braintree-$BUILD_ID
+          kubectl -n enthrall-test-store set image deployment.v1.apps/vuestorefront-canary vuestorefront=containers.internal/vue-storefront:braintree-$VER
+          
           '''
         }
       }
