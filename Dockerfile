@@ -20,6 +20,8 @@ RUN lerna bootstrap
 RUN lerna add @storefront-ui/vue@0.10.8 \
     && lerna add @storefront-ui/shared@0.10.8
 
+RUN npx browserslist@latest --update-db
+
 FROM proxy.containers.internal/library/node:15-alpine
 
 COPY --from=0 /opt/vue-storefront /opt/vue-storefront
