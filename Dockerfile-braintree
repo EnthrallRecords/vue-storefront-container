@@ -1,4 +1,4 @@
-ARG BASE=vue-storefront:test
+ARG BASE=vue-storefront:1.12.3
 
 FROM containers.internal/$BASE as build
 
@@ -10,7 +10,7 @@ RUN npm install -g lerna && \
 
 RUN lerna bootstrap
 
-FROM node:15-alpine
+FROM proxy.containers.internal/library/node:15-alpine
 
 COPY --from=0 /opt/vue-storefront /opt/vue-storefront
 

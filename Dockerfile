@@ -1,4 +1,4 @@
-FROM node:15-alpine as build
+FROM proxy.containers.internal/library/node:15-alpine as build
 
 ARG STOREFRONT_VERSION=v1.12.3
 
@@ -17,10 +17,10 @@ RUN npm install -g lerna \
 
 RUN lerna bootstrap
 
-RUN lerna add @storefront-ui/vue@0.10.5 \
-    && lerna add @storefront-ui/shared@0.10.5
+RUN lerna add @storefront-ui/vue@0.10.8 \
+    && lerna add @storefront-ui/shared@0.10.8
 
-FROM node:15-alpine
+FROM proxy.containers.internal/library/node:15-alpine
 
 COPY --from=0 /opt/vue-storefront /opt/vue-storefront
 
