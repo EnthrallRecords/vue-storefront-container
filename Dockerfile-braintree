@@ -10,6 +10,8 @@ RUN npm install -g lerna && \
 
 RUN lerna bootstrap
 
+RUN npx browserslist@latest --update-db
+
 FROM proxy.containers.internal/library/node:15-alpine
 
 COPY --from=0 /opt/vue-storefront /opt/vue-storefront
