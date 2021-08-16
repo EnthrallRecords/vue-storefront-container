@@ -3,7 +3,8 @@ FROM proxy.containers.internal/library/node:15-alpine as build
 ARG STOREFRONT_VERSION=v1.12.3
 
 RUN apk add --no-cache git curl build-base python2 && \
-    npm install -g npm
+    npm install -g npm && \
+    npm install lerna
 
 RUN git clone -b $STOREFRONT_VERSION https://github.com/vuestorefront/vue-storefront.git /opt/vue-storefront
 
