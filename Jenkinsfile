@@ -41,7 +41,6 @@ pipeline {
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
           /kaniko/executor --build-arg BASE=vue-storefront:$BUILD_ID -c `pwd` -f Dockerfile-braintree --skip-tls-verify \
-            --cache=true --cache-ttl=4h \
             --destination=containers.internal/vue-storefront:braintree-$BUILD_ID \
             --destination=containers.internal/vue-storefront:braintree-$VER
           '''
