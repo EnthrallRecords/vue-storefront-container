@@ -9,16 +9,15 @@ RUN git clone -b $STOREFRONT_VERSION https://github.com/vuestorefront/vue-storef
 
 WORKDIR /opt/vue-storefront
 
-RUN npm install -g lerna \
-    && cp /opt/vue-storefront/config/default.json /opt/vue-storefront/config/local.json \
+RUN cp /opt/vue-storefront/config/default.json /opt/vue-storefront/config/local.json \
     && git submodule add -b master https://github.com/vuestorefront/vsf-default.git src/themes/default \
     && git submodule add -b master https://github.com/DivanteLtd/vsf-capybara.git src/themes/capybara \
     && git submodule update --init --remote
 
-RUN lerna bootstrap
+RUN yarn lerna bootstrap
 
-RUN lerna add @storefront-ui/vue@0.10.8 \
-    && lerna add @storefront-ui/shared@0.10.8
+RUN yarn lerna add @storefront-ui/vue@0.10.8 \
+    && yarn lerna add @storefront-ui/shared@0.10.8
 
 RUN npx browserslist@latest --update-db
 

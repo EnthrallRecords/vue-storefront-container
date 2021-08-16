@@ -14,7 +14,7 @@ pipeline {
         PATH = "/busybox:/kaniko:$PATH"
       }
       steps {
-        checkout([$class: 'GitSCM', branches: [[name: 'master']],
+        checkout([$class: 'GitSCM', branches: [[name: 'test']],
           userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront-container.git']]])
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
@@ -35,7 +35,7 @@ pipeline {
         PATH = "/busybox:/kaniko:$PATH"
       }
       steps {
-        checkout([$class: 'GitSCM', branches: [[name: 'master']],
+        checkout([$class: 'GitSCM', branches: [[name: 'test']],
           userRemoteConfigs: [[url: 'https://github.com/EnthrallRecords/vue-storefront-container.git']]])
         container(name: 'kaniko', shell: '/busybox/sh') {
           sh '''#!/busybox/sh
