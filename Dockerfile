@@ -18,8 +18,8 @@ RUN cp /opt/vue-storefront/config/default.json /opt/vue-storefront/config/local.
 
 RUN yarn lerna bootstrap
 
-RUN yarn lerna add @storefront-ui/vue@0.10.8 \
-    && yarn lerna add @storefront-ui/shared@0.10.8
+RUN yarn lerna add @storefront-ui/vue@0.10.7 \
+    && yarn lerna add @storefront-ui/shared@0.10.7
 
 RUN npx browserslist@latest --update-db
 
