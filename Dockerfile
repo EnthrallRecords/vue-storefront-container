@@ -16,10 +16,8 @@ RUN cp /opt/vue-storefront/config/default.json /opt/vue-storefront/config/local.
     && git submodule add -b master https://github.com/DivanteLtd/vsf-capybara.git src/themes/capybara \
     && git submodule update --init --remote
 
-RUN yarn lerna bootstrap
-
-RUN yarn lerna add @storefront-ui/vue@0.10.5 \
-    && yarn lerna add @storefront-ui/shared@0.10.5
+RUN yarn lerna add @storefront-ui/shared@0.10.5 --no-bootstrap \
+    && yarn lerna add @storefront-ui/vue@0.10.5
 
 RUN npx browserslist@latest --update-db
 
